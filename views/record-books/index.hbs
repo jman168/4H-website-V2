@@ -1,0 +1,55 @@
+{{# each records }}
+	<div class="row p-3">
+	{{# each this }}
+		<div class="col-md-4 col-md-offset-3">
+			<div class="card">
+			  <div class="card-body">
+			    <h5 class="card-title">{{this.name}}</h5>
+			    <p class="card-text">Name: {{this.name}}<br>
+			    	Type: {{this.type}}<br>
+			    	Year: {{this.year}}</p>
+			    <div>
+				    <a href="#{{this.ID}}" class="btn btn-primary float-left">Veiw</a>
+				    <button onclick="deleteRecord('{{this.ID}}')" class="btn btn-danger float-right">Delete</button>
+			    </div>
+			  </div>
+			</div>
+		</div>
+	{{/each}}
+	</div>
+{{/each}}
+
+<div class="row p-3">
+	<div class="col-md-4 col-md-offset-3">
+		<div class="card">
+		  <div class="card-body">
+		    <h5 class="card-title"><div id='title'></div></h5>
+		    <form action="/record-books" method="post">
+			    <p class="card-text">
+			    	Name: <input type="text" name="name" id='nameInput'><br>
+			    	Type: <input type="text" name="type"><br>
+			    	Year: <input type="text" name="year">
+			    </p>
+			    <button type="submit" class="btn btn-success">Add</button>
+		    </form>
+		  </div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#nameInput').keyup(function() {
+		$('#title').html($('#nameInput').val());
+	});
+
+	function deleteRecord(ID){
+		$.ajax({
+   			url: '/record-books',
+			data: { ID: ID },
+   			type: 'DELETE',
+   			success: function(data) {
+   				window.location=data.url;
+   			}
+   		});
+	}
+</script>
