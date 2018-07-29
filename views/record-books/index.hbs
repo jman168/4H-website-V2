@@ -62,8 +62,11 @@
    			}
    		});
 	}
-
+	
 	function next(){
-		enjoyhint_instance.trigger('next');
+		console.log("NEXT!")
+		if(sessionStorage.getItem('onTour')=='true'){
+			enjoyhint_instance.trigger('next');
+		}
 	}
 </script>
