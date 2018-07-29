@@ -1,18 +1,36 @@
 <div class="row p-3">
-	<div class="col-md-4 col-md-offset-4"></div>
-	<div class="col-md-4 col-md-offset-4">
-		<h1>Sign In</h1>
-		<a>{{message}}</a>
-		<form action="/user/signin" method="post">
-			<div class="form-group">
-				<label for="username">Username</label>
-				<input type="text" id='username' name="username" class="form-control">
-			</div>
-			<div class="form-group">
-				<label for="password">Password</label>
-				<input type="password" id='password' name="password" class="form-control">
-			</div>
-			<button type="submit" class="btn btn-success">Sign Up</button>
-		</form>
+	<div class="col-md-4"></div>
+	<div class="col-md-4">
+		<div class="card p-3">
+			<h1>Sign In</h1>
+			<a>{{message}}</a>
+			<form action="/user/signin" method="post">
+				<div class="form-group">
+					<label for="username">Username</label>
+					<input onchange="enjoyhint_instance.trigger('onChange');" type="text" id="username" name="username" class="form-control">
+				</div>
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input type="password" onchange="enjoyhint_instance.trigger('onChange');" id="password" name="password" class="form-control">
+				</div>
+				<button type="submit" class="btn btn-success">Sign In</button>
+				<div class="card p-1 mt-3" id="signup">
+					Don't have a RBGASS account? 
+					<a href="/user/signup">Signup.</a>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+		//set script config
+		enjoyhint_instance.set(tours.signinPage);
+
+		//run Enjoyhint script
+		if(sessionStorage.getItem('onTour')=='true'){
+			enjoyhint_instance.run();
+		}
+	});
+</script>

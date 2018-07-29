@@ -16,6 +16,24 @@
 			<p>
 				The RBGASS system aims to help graders and students alike by helping both to more easely and eficintly fill out and grade record books
 			</p>
+			<button class="btn btn-info" onclick="startTour();">Start the tour</button>
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+		//set script config
+		enjoyhint_instance.set(tours.homePage);
+
+		//run Enjoyhint script
+		if(sessionStorage.getItem('onTour')=='true'){
+			enjoyhint_instance.run();
+		}
+	});
+
+	function startTour(argument) {
+		sessionStorage.setItem('onTour', true)
+		enjoyhint_instance.run();
+	}
+</script>

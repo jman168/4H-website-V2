@@ -1,2 +1,14 @@
 <h1>User Profile!</h1>
 <a>You token is {{token}}</a>
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+		//set script config
+		enjoyhint_instance.set(tours.userProfilePage);
+
+		//run Enjoyhint script
+		if(sessionStorage.getItem('onTour')=='true'){
+			enjoyhint_instance.run();
+		}
+	});
+</script>

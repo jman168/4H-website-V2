@@ -63,7 +63,20 @@ router.get('/logout', function(req, res, next) {
 });
 
 router.get('/profile', function(req, res, next) {
-	res.render('user/profile', {token: req.cookies.token});
+	TOKEN = req.cookies.token;
+	var sql = "SELECT EXISTS(SELECT 1 FROM users WHERE token = '"+TOKEN+"');";
+	con.query(sql, function (error, results, fields){
+		if(results[0][fields[0].name]>0){
+			var sql = "SELECT ID FROM users WHERE token = '"+TOKEN+"'";
+			con.query(sql, function (error, results, fields){
+				var ID = results[0][fields[0].name]
+				res.render('user/profile', {token: TOKEN, ID: ID});
+			});
+		}
+		else {
+			res.redirect('/user/signin')
+		}
+	});
 });
 
 module.exports = router;
