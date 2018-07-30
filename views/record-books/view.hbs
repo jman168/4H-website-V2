@@ -1,0 +1,21 @@
+{{# each data }}
+	<div class="input-group mb-3">
+		<div class="input-group-prepend">
+			<span class="input-group-text" id="basic-addon1">{{this.field}}</span>
+		</div>
+		<input type="text" class="form-control" value="{{this.value}}" aria-label="Username" aria-describedby="basic-addon1" onchange="update('{{this.field}}',this);">
+	</div>
+{{/each}}
+
+<script type="text/javascript">
+	var ID = "{{ID}}";
+
+	function update(field, element) {
+		var value = $(element).val()
+		$.ajax({
+   			url: '/record-books/view',
+			data: { ID: ID, field: field, value: value },
+   			type: 'POST'
+   		});
+	}
+</script>

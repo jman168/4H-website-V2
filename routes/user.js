@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var con = require('../models/mysql');
+var mysql = require('../models/mysql');
+var con = mysql.con;
 var crypto = require('crypto');
 var secret = require(process.env['HOME']+'/secret');
 
@@ -15,20 +16,16 @@ router.post('/signup', function(req, res, next) {
 						.digest('hex');
 	const ID = crypto.randomBytes(32).toString('hex');
 	const TOKEN = crypto.randomBytes(64).toString('hex');
-	var sql = "SELECT EXISTS(SELECT 1 FROM users WHERE username = '"+req.body.username+"');";
-	con.query(sql, function (error, results, fields){
-		if(results[0][fields[0]['name']]==0){
-			var sql = "INSERT INTO users VALUES ('"+ID+"','"+TOKEN+"','user','"+req.body.username+"','"+hash+"');";
-			con.query(sql, function (error, results, fields) {
-				if (error) throw error;
-				res.cookie('token',TOKEN, { maxAge: 900000});
-				res.redirect('/user/profile');
-			});
-		}
-		else {
-			req.flash('message', 'The ultimate first world problem... The username is taken :(');
-			res.redirect('/user/signup');
-		}
+	mysql.checkForUser(req.body.username, function(results) {
+		var sql = "INSERT INTO users VALUES ('"+ID+"','"+TOKEN+"','user','"+req.body.username+"','"+hash+"');";
+		con.query(sql, function (error, results, fields) {
+			if (error) throw error;
+			res.cookie('token',TOKEN, { maxAge: 900000});
+			res.redirect('/user/profile');
+		});
+	}, function() {
+		req.flash('message', 'The ultimate first world problem... The username is taken :(');
+		res.redirect('/user/signup');
 	});
 });
 
@@ -41,19 +38,15 @@ router.post('/signin', function(req, res, next) {
 						.update(req.body.password)
 						.digest('hex');
 	const TOKEN = crypto.randomBytes(64).toString('hex');
-	var sql = "SELECT EXISTS(SELECT 1 FROM users WHERE username = '"+req.body.username+"' AND password = '"+hash+"');";
-	con.query(sql, function (error, results, fields){
-		if(results[0][fields[0]['name']]==0){
-			req.flash('message', 'Invalid credentials... Did you type it write sausage fingers?');
-			res.redirect('/user/signin');
-		}
-		else {
-			var sql = "UPDATE users SET token = '"+TOKEN+"' WHERE username = '"+req.body.username+"'";
+	mysql.authByUserPass(req.body.username, hash, function() {
+		var sql = "UPDATE users SET token = '"+TOKEN+"' WHERE username = '"+req.body.username+"'";
 			con.query(sql, function (error, results, fields){
-				res.cookie('token',TOKEN, { maxAge: 900000});
-				res.redirect('/user/profile');
-			});
-		}
+			res.cookie('token',TOKEN, { maxAge: 900000});
+			res.redirect('/user/profile');
+		});
+	}, function() {
+		req.flash('message', 'Invalid credentials... Did you type it write sausage fingers?');
+		res.redirect('/user/signin');
 	});
 });
 
@@ -64,18 +57,11 @@ router.get('/logout', function(req, res, next) {
 
 router.get('/profile', function(req, res, next) {
 	TOKEN = req.cookies.token;
-	var sql = "SELECT EXISTS(SELECT 1 FROM users WHERE token = '"+TOKEN+"');";
-	con.query(sql, function (error, results, fields){
-		if(results[0][fields[0].name]>0){
-			var sql = "SELECT ID FROM users WHERE token = '"+TOKEN+"'";
-			con.query(sql, function (error, results, fields){
-				var ID = results[0][fields[0].name]
-				res.render('user/profile', {token: TOKEN, ID: ID});
-			});
-		}
-		else {
-			res.redirect('/user/signin')
-		}
+	mysql.authByToken(TOKEN, function(results) {
+		var ID = results[0]['ID']
+		res.render('user/profile', {token: TOKEN, ID: ID});
+	}, function() {
+		res.redirect('/user/signin');
 	});
 });
 

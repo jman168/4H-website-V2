@@ -1,2 +1,3 @@
 CREATE TABLE records (ID VARCHAR(128), user VARCHAR(64), type VARCHAR(32), name VARCHAR(64), year VARCHAR(4));
 CREATE TABLE users (ID VARCHAR(64), token VARCHAR(128), type VARCHAR(6), username VARCHAR(64), password VARCHAR(64));
+CREATE TABLE poultry_records (ID VARCHAR(128), Exhibitor_Name VARCHAR(64), Project_Year VARCHAR(64), Date_of_Birth VARCHAR(64), Age VARCHAR(64), Grade VARCHAR(64), Club_or_Chapter VARCHAR(64), Years_in_the_project VARCHAR(64));

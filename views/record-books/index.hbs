@@ -9,7 +9,7 @@
 			    	Type: {{this.type}}<br>
 			    	Year: {{this.year}}</p>
 			    <div>
-				    <a href="#{{this.ID}}" class="btn btn-primary float-left">Veiw</a>
+				    <a href="/record-books/view/?ID={{this.ID}}" class="btn btn-primary float-left">View</a>
 				    <button onclick="deleteRecord('{{this.ID}}')" class="btn btn-danger float-right">Delete</button>
 			    </div>
 			  </div>
@@ -64,7 +64,6 @@
 	}
 	
 	function next(){
-		console.log("NEXT!")
 		if(sessionStorage.getItem('onTour')=='true'){
 			enjoyhint_instance.trigger('next');
 		}
